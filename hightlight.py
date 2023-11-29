@@ -2,8 +2,10 @@
 import fitz
 import re
 from io import BytesIO
-from fitz.utils import getColor
 import random
+import argparse
+
+
 
 
 
@@ -644,18 +646,25 @@ parts = ['AA3-025X5/8X5/8X5"',
     "U-1008-1",
     "U-1010"]
 
+#Color list for highlights
 cl = ['lightpink2', 'palevioletred2',
       'steelblue', 'deepskyblue', 'cyan', 'cyan2', 'aquamarine2', 'green',
        'limegreen', 'chartreuse1', 'darkolivegreen2', 'olivedrab1', 
       'gold2', 'darkgoldenrod3', 'orange', 'darkorange1', 'orangered2',
        'indianred2']
 
-output_file = "test1output.pdf"
-# search_str = 'F-1052'
-input_file = 'test1.pdf'
+#Command line arguments
+argParser = argparse.ArgumentParser()
+argParser.add_argument("-i", "--input", help="Input file path")
+argParser.add_argument("-o", "--output", help="Output file path")
+args = argParser.parse_args()
+input_file = args.input
+output_file = args.output
+
+#Setup for pdf scan
 pdfDoc = fitz.open(input_file)
 
-
+#Print page count of input PDF
 print(pdfDoc.page_count)
 
 def search_for_text(lines, search_str):
@@ -690,13 +699,14 @@ def highlight_matching_data(page, matched_values, highlight_color):
 
 
 
-    # Save the generated PDF to memory buffer
+# Save the generated PDF to memory buffer
 output_buffer = BytesIO()
 total_matches = 0
-    # Iterate through pages
+
+# Iterate through pages
 for pg in range(pdfDoc.page_count):
     
-        # Select the page
+    # Select the page
     page = pdfDoc[pg]
     random.shuffle(cl)
         # Get Matching Data
@@ -712,10 +722,10 @@ for pg in range(pdfDoc.page_count):
                 color_count += 1
             total_matches += matches_found
         
-print(f"{total_matches} Match(es) Found of Parts List In Input File: {input_file}")
-    # Save to output
+print(f"{total_matches} Match(es) Found of Parts List In Input File: {input_file} -- Saved to: {output_file}")
+# Save to output
 pdfDoc.save(output_buffer)
 pdfDoc.close()
-    # Save the output buffer to the output file
+# Save the output buffer to the output file
 with open(output_file, mode='wb') as f:
     f.write(output_buffer.getbuffer())
