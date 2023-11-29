@@ -478,7 +478,7 @@ parts = ['AA3-025X5/8X5/8X5"',
     "F-1039J",
     "F-1040",
     "F-1041",
-    "F-1042E-L/R",
+    "F-1042E",
     "F-1042F",
     "F-1042G",
     "F-1043A",
@@ -535,7 +535,7 @@ parts = ['AA3-025X5/8X5/8X5"',
     "F-1067B",
     "F-1068A",
     "F-1068B",
-    "F-1070",
+    "F-1070", # A, B section 29
     "F-1071",
     "F-1071B",
     "F-1076",
@@ -647,11 +647,14 @@ parts = ['AA3-025X5/8X5/8X5"',
     "U-1010"]
 
 #Color list for highlights
-cl = ['deeppink',
-      'steelblue', 'deepskyblue', 'cyan', 'cyan2', 'aquamarine2', 'green',
-       'limegreen', 'chartreuse1', 'darkolivegreen2', 'olivedrab1', 
-      'gold3', 'darkgoldenrod3', 'orange', 'darkorange1', 'orangered2',
-      'red3']
+cl = ['deeppink', 'pink3', 'magenta', 'darkorchid2', 'maroon',
+      'slateblue', 'steelblue', 'deepskyblue', 'cyan', 'cyan3', 'aquamarine3',  'royalblue2',
+      'green', 'limegreen', 'chartreuse1', 'darkolivegreen3', 'yellowgreen', 
+       'khaki3', 
+      'gold2', 'darkgoldenrod3', 
+      'orange', 'darkorange1', 'orangered','orangered3', 'salmon3',
+      'red3', 'indianred3',
+      'snow4']
 
 #Command line arguments
 argParser = argparse.ArgumentParser()
