@@ -699,15 +699,10 @@ def lr_highlight(matched_values, border_color):
             ur = quad.ur
             ur_big = fitz.Point(ur[0] + 5, ur[1] - 1)
             big_quad = fitz.Quad(ul_big, ll_big, ur_big, lr_big)
+            #Draw colored border around '-L' and '-R'
             page.draw_quad(big_quad, color= fitz.utils.getColor(border_color))
-            # shape.finish(color='red')
             shape.commit()
-        # print("matching_val_area",matching_val_area)
-        # highlight = None
-        # highlight = page.add_highlight_annot(matching_val_area)
-        # highlight.set_border(width= .5, style= 'S')
-        # highlight.set_colors(stroke= None, fill= fitz.utils.getColor(border))
-        # highlight.update(opacity= 0.5) 
+
 
 def highlight_left(left_parts):
     lr_highlight(left_parts, 'darkred')
