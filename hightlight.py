@@ -649,7 +649,7 @@ parts = ['AA3-025X5/8X5/8X5"',
 #Color list for highlights
 cl = ['deeppink', 'pink3', 'magenta', 'darkorchid2', 'maroon',
       'slateblue', 'steelblue', 'deepskyblue', 'cyan', 'cyan3', 'aquamarine3',  'royalblue2',
-      'green', 'limegreen', 'chartreuse1', 'darkolivegreen3', 'yellowgreen', 
+      'green', 'limegreen', 'chartreuse1', 'yellowgreen', 
        'khaki4', 
       'gold2', 'darkgoldenrod3', 
       'orange', 'darkorange1', 'orangered','orangered3', 'salmon3',
@@ -662,9 +662,9 @@ argParser.add_argument("-i", "--input", help="Input file path")
 argParser.add_argument("-o", "--output", help="Output file path")
 args = argParser.parse_args()
 input_file = args.input
-# input_file = "test1.pdf"
+# input_file = "test.pdf"
 output_file = args.output
-# output_file = "test1output.pdf"
+# output_file = "test_output.pdf"
 
 #Setup for pdf scan
 pdfDoc = fitz.open(input_file)
@@ -754,8 +754,9 @@ for pg in range(pdfDoc.page_count):
     for x in parts:
         matched_values = search_for_text(page_lines, x)
         if matched_values:
+            h_color = cl[color_count] if color_count < len(cl) else 'yellow'
             matches_found = highlight_matching_data(
-                page, matched_values, cl[color_count])
+                page, matched_values, h_color)
             if matches_found > 0:
                 color_count += 1
             total_matches += matches_found
