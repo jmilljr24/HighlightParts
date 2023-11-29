@@ -647,27 +647,28 @@ parts = ['AA3-025X5/8X5/8X5"',
     "U-1010"]
 
 #Color list for highlights
-cl = ['lightpink2', 'palevioletred2',
+cl = ['deeppink',
       'steelblue', 'deepskyblue', 'cyan', 'cyan2', 'aquamarine2', 'green',
        'limegreen', 'chartreuse1', 'darkolivegreen2', 'olivedrab1', 
-      'gold2', 'darkgoldenrod3', 'orange', 'darkorange1', 'orangered2',
-       'indianred2']
+      'gold3', 'darkgoldenrod3', 'orange', 'darkorange1', 'orangered2',
+      'red3']
 
 #Command line arguments
 argParser = argparse.ArgumentParser()
 argParser.add_argument("-i", "--input", help="Input file path")
 argParser.add_argument("-o", "--output", help="Output file path")
 args = argParser.parse_args()
-# input_file = args.input
-input_file = "test1.pdf"
-# output_file = args.output
-output_file = "test1output.pdf"
+input_file = args.input
+# input_file = "test1.pdf"
+output_file = args.output
+# output_file = "test1output.pdf"
 
 #Setup for pdf scan
 pdfDoc = fitz.open(input_file)
 
 #Print page count of input PDF
-print(pdfDoc.page_count)
+num_pages = pdfDoc.page_count
+print( str(num_pages) + " pages to process...")
 
 def search_for_text(lines, search_str):
     """
@@ -683,7 +684,7 @@ def search_for_text(lines, search_str):
         for result in results:
             yield result
 
-def lr_highlight(matched_values, border):
+def lr_highlight(matched_values, border_color):
     for val in matched_values:
         shape = page.new_shape()
         matching_val_area = page.search_for(val, quads=True)
@@ -698,7 +699,8 @@ def lr_highlight(matched_values, border):
             ur = quad.ur
             ur_big = fitz.Point(ur[0] + 5, ur[1] - 1)
             big_quad = fitz.Quad(ul_big, ll_big, ur_big, lr_big)
-            page.draw_quad(big_quad)
+            page.draw_quad(big_quad, color= fitz.utils.getColor(border_color))
+            # shape.finish(color='red')
             shape.commit()
         # print("matching_val_area",matching_val_area)
         # highlight = None
@@ -708,10 +710,10 @@ def lr_highlight(matched_values, border):
         # highlight.update(opacity= 0.5) 
 
 def highlight_left(left_parts):
-    lr_highlight(left_parts, 'red')
+    lr_highlight(left_parts, 'darkred')
     
 def highlight_right(right_parts):
-    lr_highlight(right_parts, 'green')
+    lr_highlight(right_parts, 'chartreuse4')
 
 def highlight_matching_data(page, matched_values, highlight_color):
     """
