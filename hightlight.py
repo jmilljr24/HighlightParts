@@ -658,8 +658,10 @@ argParser = argparse.ArgumentParser()
 argParser.add_argument("-i", "--input", help="Input file path")
 argParser.add_argument("-o", "--output", help="Output file path")
 args = argParser.parse_args()
-input_file = args.input
-output_file = args.output
+# input_file = args.input
+input_file = "test1.pdf"
+# output_file = args.output
+output_file = "test1output.pdf"
 
 #Setup for pdf scan
 pdfDoc = fitz.open(input_file)
@@ -673,12 +675,43 @@ def search_for_text(lines, search_str):
     """
     for line in lines:
         # Find all matches within one line
+
+
         search_regex = re.escape(search_str) + r'(?:\s+|\-|\,)' # Reduces duplicates. regex for space, - or endof line
         results = re.findall(search_regex, line, re.IGNORECASE)
         # In case multiple matches within one line
         for result in results:
             yield result
 
+def lr_highlight(matched_values, border):
+    for val in matched_values:
+        shape = page.new_shape()
+        matching_val_area = page.search_for(val, quads=True)
+        for quad in matching_val_area:
+            #Adjust border position/size due to OCR alignment inaccuracy
+            ul = quad.ul
+            ul_big = fitz.Point(ul[0] + 4, ul[1] - 1)
+            ll = quad.ll
+            ll_big = fitz.Point(ll[0] + 4, ll[1] + 1)
+            lr = quad.lr
+            lr_big = fitz.Point(lr[0] + 5, lr[1] + 1)
+            ur = quad.ur
+            ur_big = fitz.Point(ur[0] + 5, ur[1] - 1)
+            big_quad = fitz.Quad(ul_big, ll_big, ur_big, lr_big)
+            page.draw_quad(big_quad)
+            shape.commit()
+        # print("matching_val_area",matching_val_area)
+        # highlight = None
+        # highlight = page.add_highlight_annot(matching_val_area)
+        # highlight.set_border(width= .5, style= 'S')
+        # highlight.set_colors(stroke= None, fill= fitz.utils.getColor(border))
+        # highlight.update(opacity= 0.5) 
+
+def highlight_left(left_parts):
+    lr_highlight(left_parts, 'red')
+    
+def highlight_right(right_parts):
+    lr_highlight(right_parts, 'green')
 
 def highlight_matching_data(page, matched_values, highlight_color):
     """
@@ -712,6 +745,11 @@ for pg in range(pdfDoc.page_count):
         # Get Matching Data
         # Split page by lines
     page_lines = page.get_text("text").split('\n')
+    for line in page_lines:
+        left_result = re.findall("-L", line)
+        highlight_left(left_result)
+        right_result = re.findall("-R", line)
+        highlight_right(right_result)
     color_count = 0
     for x in parts:
         matched_values = search_for_text(page_lines, x)
