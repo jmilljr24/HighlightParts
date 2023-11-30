@@ -662,7 +662,7 @@ argParser.add_argument("-i", "--input", help="Input file path")
 argParser.add_argument("-o", "--output", help="Output file path")
 args = argParser.parse_args()
 # input_file = args.input
-input_file = "test.pdf"
+input_file = "pdfs/06_10.pdf"
 # output_file = args.output
 output_file = "test_output.pdf"
 
