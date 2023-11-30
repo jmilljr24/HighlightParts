@@ -59,7 +59,7 @@ for pg in range(pdfDoc.page_count):
         part_num = val[4]
         uniq_parts += colorize(part_num)
         matching_val_area = page.search_for(part_num, quads=True)
-        # print("matching_val_area",matching_val_area)
+
         highlight = None
         highlight = page.add_highlight_annot(matching_val_area)
         highlight.set_colors(stroke= fitz.utils.getColor(color_dict[part_num]))
