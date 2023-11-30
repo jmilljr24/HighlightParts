@@ -661,10 +661,10 @@ argParser = argparse.ArgumentParser()
 argParser.add_argument("-i", "--input", help="Input file path")
 argParser.add_argument("-o", "--output", help="Output file path")
 args = argParser.parse_args()
-input_file = args.input
-# input_file = "test.pdf"
-output_file = args.output
-# output_file = "test_output.pdf"
+# input_file = args.input
+input_file = "test.pdf"
+# output_file = args.output
+output_file = "test_output.pdf"
 
 #Setup for pdf scan
 pdfDoc = fitz.open(input_file)
