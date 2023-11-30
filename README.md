@@ -35,3 +35,9 @@ Output file path
 ```
 python3 hightlight.py -i test.pdf -o test_output.pdf
 ```
+
+## Testing
+
+Test regex results with regex.py
+
+Output is all results and highlighted in yellow
