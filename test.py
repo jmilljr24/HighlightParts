@@ -15,17 +15,42 @@ cl = ['deeppink', 'pink3', 'magenta', 'darkorchid2', 'maroon',
       'snow4']
 
 
-input_file = "pdfs/06_10.pdf"
+input_file = "pdfs/27_10.pdf"
 output_file = "test.pdf"
 parts_re = re.compile(r"[A-Z]{1,2}-\d{3,5}[A-Z]?(-[LR])?")  # need to exclude "(" at beginning tried ^[^\(] but did not work on 07_10. 06_10 was was successfully
 
 # Add key/value pair for unique parts
 def colorize(part):
     if part not in color_dict:
-        color_dict[part] = cl[uniq_parts]
+        color_dict[part] = cl[uniq_parts] if len(color_dict) < len(cl) else 'yellow'
         return 1
     return 0
 
+def lr_highlight(matched_values, border_color):
+    for val in matched_values:
+        shape = page.new_shape()
+        matching_val_area = page.search_for(val, quads=True)
+        for quad in matching_val_area:
+            #Adjust border position/size due to OCR alignment inaccuracy
+            ul = quad.ul
+            ul_big = fitz.Point(ul[0] + 1, ul[1] - 1)
+            ll = quad.ll
+            ll_big = fitz.Point(ll[0] + 1, ll[1] + 1)
+            lr = quad.lr
+            lr_big = fitz.Point(lr[0] + 4, lr[1] + 1)
+            ur = quad.ur
+            ur_big = fitz.Point(ur[0] + 4, ur[1] - 1)
+            big_quad = fitz.Quad(ul_big, ll_big, ur_big, lr_big)
+            #Draw colored border around '-L' and '-R'
+            page.draw_quad(big_quad, color= fitz.utils.getColor(border_color))
+            shape.commit()
+
+
+def highlight_left(left_parts):
+    lr_highlight(left_parts, 'darkred')
+    
+def highlight_right(right_parts):
+    lr_highlight(right_parts, 'chartreuse4')
 
 #Setup for pdf scan
 pdfDoc = fitz.open(input_file)
@@ -41,6 +66,12 @@ for pg in range(pdfDoc.page_count):
     # Select the page
     page = pdfDoc[pg]
 
+    page_lines = page.get_text("text").split('\n')
+    for line in page_lines:
+        left_result = re.findall("-L", line)
+        highlight_left(left_result)
+        right_result = re.findall("-R", line)
+        highlight_right(right_result)
     #Randomize color list
     random.shuffle(cl)
 
@@ -50,7 +81,7 @@ for pg in range(pdfDoc.page_count):
 
     for m in matches:
         print(m[4])
-    print(len(matches))
+    
     count += len(matches)
 
     color_dict = {}
@@ -63,9 +94,9 @@ for pg in range(pdfDoc.page_count):
         highlight = None
         highlight = page.add_highlight_annot(matching_val_area)
         highlight.set_colors(stroke= fitz.utils.getColor(color_dict[part_num]))
-        highlight.update(opacity= 0.5)
+        highlight.update(opacity= 0.3)
 
-print(count)
+print(str(count) + ' Matches found')
 # Save to output
 pdfDoc.save(output_buffer)
 pdfDoc.close()
