@@ -15,9 +15,16 @@ cl = ['deeppink', 'pink3', 'magenta', 'darkorchid2', 'maroon',
       'snow4']
 
 
-input_file = "pdfs/27_10.pdf"
-output_file = "test.pdf"
+# input_file = "pdfs/27_10.pdf"
+# output_file = "test.pdf"
 parts_re = re.compile(r"[A-Z]{1,2}-\d{3,5}[A-Z]?(-[LR])?")  # need to exclude "(" at beginning tried ^[^\(] but did not work on 07_10. 06_10 was was successfully
+#Command line arguments
+argParser = argparse.ArgumentParser()
+argParser.add_argument("-i", "--input", help="Input file path")
+argParser.add_argument("-o", "--output", help="Output file path")
+args = argParser.parse_args()
+input_file = args.input
+output_file = args.output
 
 # Add key/value pair for unique parts
 def colorize(part):
