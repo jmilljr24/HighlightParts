@@ -1,17 +1,20 @@
 import fitz
 import re
 from io import BytesIO
-import random
-import argparse
 
+################################################################
+# This file can be use to test the regex. The output of every match is printed 
+# and the output file has all matches highlighted in yellow.
+################################################################
 
-input_file = "pdfs/50_10-ocr.pdf"
+input_file = "pdfs/25_10.pdf"
 output_file = "test.pdf"
 
 parts_re = re.compile(r"[A-Z]{1,2}-\d{3,5}[A-Z]?(-[LR])?")
 
 #Setup for pdf scan
 pdfDoc = fitz.open(input_file)
+output_buffer = BytesIO()
 # Iterate through pages
 count = 0
 for pg in range(pdfDoc.page_count):
@@ -33,4 +36,10 @@ for pg in range(pdfDoc.page_count):
         highlight.set_colors(stroke= fitz.utils.getColor("yellow"))
         highlight.update(opacity= 0.5)
 
-# print(count)
+print(str(count) + ' Matches found')
+# Save to output
+pdfDoc.save(output_buffer)
+pdfDoc.close()
+# Save the output buffer to the output file
+with open(output_file, mode='wb') as f:
+    f.write(output_buffer.getbuffer())
