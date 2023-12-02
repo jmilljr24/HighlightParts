@@ -40,16 +40,16 @@ def lr_highlight(matched_values, border_color):
         for quad in matching_val_area:
             #Adjust border position/size due to OCR alignment inaccuracy
             ul = quad.ul
-            ul_big = fitz.Point(ul[0] + 1, ul[1] )
+            ul_big = fitz.Point(ul[0] - 1, ul[1])
             ll = quad.ll
             ll_big = fitz.Point(ll[0] + 1, ll[1])
             lr = quad.lr
-            lr_big = fitz.Point(lr[0] + 4, lr[1])
+            lr_big = fitz.Point(lr[0] + 1, lr[1] - 1)
             ur = quad.ur
-            ur_big = fitz.Point(ur[0] + 4, ur[1])
+            ur_big = fitz.Point(ur[0] -1, ur[1] - 1)
             big_quad = fitz.Quad(ul_big, ll_big, ur_big, lr_big)
             #Draw colored border around '-L' and '-R'
-            page.draw_quad(quad, color= fitz.utils.getColor(border_color))
+            page.draw_quad(big_quad, color= fitz.utils.getColor(border_color))
             shape.commit()
 
 
