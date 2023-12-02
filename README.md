@@ -16,7 +16,7 @@ pip install pymupdf argparse
 
 ### Usage:
 
-hightlight.py [-h] [-i INPUT] [-o OUTPUT]
+highlight.py [-h] [-i INPUT] [-o OUTPUT]
 
 options:
 
@@ -33,7 +33,7 @@ Output file path
 ## Example from command line:
 
 ```
-python3 hightlight.py -i test.pdf -o test_output.pdf
+python3 highlight.py -i test.pdf -o test_output.pdf
 ```
 
 ## Testing
