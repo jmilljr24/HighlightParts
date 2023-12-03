@@ -3,6 +3,7 @@ import re
 from io import BytesIO
 import random
 import argparse
+import math
 
 #Color list for highlights
 cl = ['deeppink', 'pink3', 'magenta', 'darkorchid2', 'maroon',
@@ -15,7 +16,7 @@ cl = ['deeppink', 'pink3', 'magenta', 'darkorchid2', 'maroon',
       'snow4']
 
 
-input_file = "pdfs/06_10.pdf"
+input_file = "pdfs/09_10.pdf"
 output_file = "test.pdf"
 parts_re = re.compile(r"[A-Z]{1,2}-\d{3,5}[A-Z]?(-[L|R])?")  # need to exclude "(" at beginning tried ^[^\(] but did not work on 07_10. 06_10 was was successfully
 #Command line arguments
@@ -71,6 +72,10 @@ def uniq_page_parts(matches):
     return [clean_parts, left_right_parts]
 
 
+
+def last_letter(word):
+    return word[::-1]
+
 #Setup for pdf scan
 pdfDoc = fitz.open(input_file)
 #Print page count of input PDF
@@ -106,15 +111,24 @@ for pg in range(pdfDoc.page_count):
 
     color_dict = {}
     uniq_parts = 0
-    for val in uniq[0]:
-        part_num = val
+    base_set = uniq[0]
+    s = sorted(base_set)
+    contains_highlight = set()
+    for part_num in reversed(s):
+  
         uniq_parts += colorize(part_num)
         matching_val_area = page.search_for(part_num, quads=True)
 
-        highlight = None
-        highlight = page.add_highlight_annot(matching_val_area)
-        highlight.set_colors(stroke= fitz.utils.getColor(color_dict[part_num]))
-        highlight.update(opacity= 0.3)
+        for quad in range(len(matching_val_area)):
+            llx = math.trunc(matching_val_area[quad].ll[0])
+            lly = math.trunc(matching_val_area[quad].ll[1])
+        point = frozenset([llx, lly])
+        if point not in contains_highlight:
+            highlight = None
+            highlight = page.add_highlight_annot(matching_val_area)
+            highlight.set_colors(stroke= fitz.utils.getColor(color_dict[part_num]))
+            highlight.update(opacity= 0.5)
+            contains_highlight.add(point)
 
 print(str(count) + ' Matches found')
 # Save to output
