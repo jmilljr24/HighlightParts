@@ -15,16 +15,16 @@ cl = ['deeppink', 'pink3', 'magenta', 'darkorchid2', 'maroon',
       'snow4']
 
 
-# input_file = "pdfs/27_10.pdf"
-# output_file = "test.pdf"
-parts_re = re.compile(r"[A-Z]{1,2}-\d{3,5}[A-Z]?(-[LR])?")  # need to exclude "(" at beginning tried ^[^\(] but did not work on 07_10. 06_10 was was successfully
+input_file = "pdfs/06_10.pdf"
+output_file = "test.pdf"
+parts_re = re.compile(r"[A-Z]{1,2}-\d{3,5}[A-Z]?(-[L|R])?")  # need to exclude "(" at beginning tried ^[^\(] but did not work on 07_10. 06_10 was was successfully
 #Command line arguments
 argParser = argparse.ArgumentParser()
 argParser.add_argument("-i", "--input", help="Input file path")
 argParser.add_argument("-o", "--output", help="Output file path")
 args = argParser.parse_args()
-input_file = args.input
-output_file = args.output
+# input_file = args.input
+# output_file = args.output
 
 # Add key/value pair for unique parts
 def colorize(part):
@@ -56,6 +56,21 @@ def highlight_left(left_parts):
 def highlight_right(right_parts):
     lr_highlight(right_parts, 'chartreuse4')
 
+def uniq_page_parts(matches):
+    clean_parts = set()
+    left_right_parts = set()
+    for val in matches:
+        #remove unnecessary beginning and trailing characters
+        string = val[4].strip("(,")
+        part =  re.findall(r"[A-Z]{1,2}-\d{3,5}[A-Z]?", string)
+        clean_parts.add(part[0])
+        #find left/right parts
+        lr = re.search(r"-[R|L]", string)
+        if lr:
+            left_right_parts.add(lr.string)
+    return [clean_parts, left_right_parts]
+
+
 #Setup for pdf scan
 pdfDoc = fitz.open(input_file)
 #Print page count of input PDF
@@ -67,6 +82,7 @@ count = 0
 output_buffer = BytesIO()
 
 for pg in range(pdfDoc.page_count):
+    print('Page: ' + str(pg + 1))
     # Select the page
     page = pdfDoc[pg]
 
@@ -82,16 +98,16 @@ for pg in range(pdfDoc.page_count):
     #Process page for parts
     words = page.get_text("words")
     matches = [w for w in words if parts_re.findall(w[4])]
-
-    for m in matches:
-        print(m[4])
+    uniq = uniq_page_parts(matches)
+    # for m in matches:
+    #     print(m[4])
     
     count += len(matches)
 
     color_dict = {}
     uniq_parts = 0
-    for val in matches:
-        part_num = val[4]
+    for val in uniq[0]:
+        part_num = val
         uniq_parts += colorize(part_num)
         matching_val_area = page.search_for(part_num, quads=True)
 
