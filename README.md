@@ -16,15 +16,15 @@ pip install pymupdf argparse
 
 ### Usage:
 
-highlight.py [-h] [-i INPUT] [-o OUTPUT]
+highlight.py [-h] input_path
+
+positional arguments:
+
+input_path Enter the path of the file or the folder to process
 
 options:
 
 -h, --help show this help message and exit
-
--i INPUT, --input INPUT
-
-Input file path
 
 -o OUTPUT, --output OUTPUT
 
@@ -33,7 +33,11 @@ Output file path
 ## Example from command line:
 
 ```
-python3 highlight.py -i test.pdf -o test_output.pdf
+python3 highlight.py test.pdf -o test_output.pdf
+```
+
+```
+python3 highlight.py pdf_folder
 ```
 
 ## Testing
