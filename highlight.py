@@ -5,6 +5,7 @@ import random
 import argparse
 import math
 import os
+from pathlib import Path
 
 #Color list for highlights
 cl = ['deeppink', 'pink3', 'magenta', 'darkorchid2', 'maroon',
@@ -100,7 +101,7 @@ def process_file(**kwargs):
     input_file = kwargs.get('input_file')
     output_file = kwargs.get('output_file')
     if output_file is None:
-        output_file = input_file
+        output_file = Path(input_file).stem + '_colored.pdf'
 
     #highlight
     process_data(input_file=input_file, output_file=output_file)
@@ -153,8 +154,8 @@ def is_valid_path(path):
 def parse_args():
     """Get user command line parameters"""
     parser = argparse.ArgumentParser(description="Available Options")
-    parser.add_argument('-i', '--input_path', dest='input_path', type=is_valid_path,
-                        required=True, help="Enter the path of the file or the folder to process")
+    parser.add_argument('input_path', type=is_valid_path,
+                        help="Enter the path of the file or the folder to process")
     path = parser.parse_known_args()[0].input_path
     if os.path.isfile(path):
         parser.add_argument('-o', '--output_file', dest='output_file', type=str  # lambda x: os.path.has_valid_dir_syntax(x)
